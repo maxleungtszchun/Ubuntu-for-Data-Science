@@ -1,0 +1,7 @@
+version: "3"
+services:
+  ubuntu4ds:
+    image: ubuntu:jammy
+    command: "bash"
+    network_mode: host
+    restart: always
