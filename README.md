@@ -6,7 +6,7 @@ You can commit the container as an image, so you can pull the image to have a ne
 ## Getting Started
 ```shell
 # make sure Docker is on
-git clone --depth 1 https://github.com/maxleungtszchun/Ubuntu-for-Data-Science
+git clone --depth 1 https://github.com/maxleungtszchun/Ubuntu-for-Data-Science.git
 cd ./Ubuntu-for-Data-Science
 chmod +x ./ubuntu4ds.sh
 ./ubuntu4ds.sh
