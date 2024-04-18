@@ -86,8 +86,16 @@ function install_r {
 function install_r_packages {
 	sudo nala install -y libssl-dev libcurl4-openssl-dev unixodbc-dev libxml2-dev libmariadb-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev \
 		libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
-	sudo Rscript -e 'install.packages(c("tidyverse", "tidymodels", "lubridate", "glmnet", "randomForest", "caret", "xgboost", "mlr3", "e1071"), repos="http://cran.us.r-project.org")'
-	sudo Rscript -e 'install.packages(c("plm", "cquad", "sandwich", "lmtest", "ivreg", "fastDummies", "stargazer", "ordinal", "lavaan"), repos="http://cran.us.r-project.org")'
+
+	r_ds_packages='c("tidyverse", "tidymodels", "lubridate", "glmnet", "randomForest", "caret", "xgboost", "mlr3", "e1071")'
+	r_econometrics_packages='c("plm", "cquad", "sandwich", "lmtest", "ivreg", "fastDummies", "stargazer", "ordinal", "lavaan")'
+
+	if [ "$cpu_arch" = 'arm64' ]; then
+		Rscript -e "install.packages(c($r_ds_packages, $r_econometrics_packages), repos='http://cran.us.r-project.org')"
+	elif [ "$cpu_arch" = 'x64' ]; then
+		sudo Rscript -e "install.packages(c($r_ds_packages, $r_econometrics_packages), repos='http://cran.us.r-project.org')"
+	fi
+
 	print_green 'installed r packages'
 }
 
