@@ -7,6 +7,18 @@ cd ~
 function print_error { printf '%b' "\e[31m${1}\e[0m\n" >&2; }
 function print_green { printf '%b' "\e[32m${1}\e[0m\n" 2>&1; }
 
+case "$(uname -m)" in
+	aarch*64|arm*64)
+		cpu_arch='arm64'
+		;;
+	amd*64|x86*64)
+		cpu_arch='x64'
+		;;
+	*)
+		{ print_error 'only support arm64 or x86_64'; exit 1; }
+		;;
+esac
+
 function install_apt_packages {
 	sudo apt update && sudo apt install -y nala
 	sudo nala install -y nano net-tools lsof iputils-ping dnsutils gpg curl file unzip psmisc man-db \
@@ -44,7 +56,7 @@ function install_docker {
 
 function install_powershell {
 	pwsh_latest_version="$(curl -sL https://api.github.com/repos/PowerShell/PowerShell/releases/latest | jq .tag_name | tr -d 'v"')"
-	curl -sL "https://github.com/PowerShell/PowerShell/releases/download/v${pwsh_latest_version}/powershell-${pwsh_latest_version}-linux-arm64.tar.gz" \
+	curl -sL "https://github.com/PowerShell/PowerShell/releases/download/v${pwsh_latest_version}/powershell-${pwsh_latest_version}-linux-${cpu_arch}.tar.gz" \
 		-o /tmp/powershell.tar.gz
 	sudo mkdir -p /opt/microsoft/powershell/
 	sudo tar -xzvf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
@@ -55,10 +67,17 @@ function install_powershell {
 }
 
 function install_r {
-	curl -sL https://github.com/r-lib/rig/releases/download/latest/rig-linux-arm64-latest.tar.gz -o /tmp/rig-linux-arm64-latest.tar.gz
-	sudo tar -xzvf /tmp/rig-linux-arm64-latest.tar.gz -C /usr/local/
-	sudo rig add release
-	sudo rig default release
+	if [ "$cpu_arch" = 'arm64' ]; then
+		curl -sL https://github.com/r-lib/rig/releases/download/latest/rig-linux-arm64-latest.tar.gz -o /tmp/rig-linux-arm64-latest.tar.gz
+		sudo tar -xzvf /tmp/rig-linux-arm64-latest.tar.gz -C /usr/local/
+		sudo rig add release
+		sudo rig default release
+	elif [ "$cpu_arch" = 'x64' ]; then
+		sudo nala install -y gdebi-core
+		export R_VERSION="$(curl -sL https://cran.r-project.org/src/base/R-4/ | tail -6 | grep -oE '<a href="R-.+\.tar\.gz">' | cut -c12-16)"
+		curl -sL https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.deb -o /tmp/r-${R_VERSION}_1_amd64.deb
+		sudo gdebi /tmp/r-${R_VERSION}_1_amd64.deb
+	fi
 	print_green 'installed r'
 }
 
@@ -97,10 +116,10 @@ function install_spark {
 	sudo unzip '*.zip'
 
 	cat >> ~/.bashrc <<-'EOF'
-	export SPARK_HOME="/opt/spark/spark"
-	export PATH="$SPARK_HOME/bin:$PATH"
-	export PYTHONPATH="/opt/spark/spark/python/lib:$PYTHONPATH"
-	export PYSPARK_PYTHON=python
+		export SPARK_HOME="/opt/spark/spark"
+		export PATH="$SPARK_HOME/bin:$PATH"
+		export PYTHONPATH="/opt/spark/spark/python/lib:$PYTHONPATH"
+		export PYSPARK_PYTHON=python
 	EOF
 	print_green 'installed spark'
 }
