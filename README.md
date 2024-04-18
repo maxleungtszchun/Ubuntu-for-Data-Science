@@ -3,7 +3,7 @@ This repo includes scripts for building an Ubuntu Docker container for data scie
 
 You can commit the container as an image, so you can pull the image to have a new Ubuntu environment when you want to test something out.
 
-Note - only support Arm CPU architecture.
+Support both Arm64 and X64 CPU architecture.
 
 ## Getting Started
 ```shell
