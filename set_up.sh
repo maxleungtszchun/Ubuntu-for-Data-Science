@@ -12,4 +12,5 @@ start="$SECONDS"; trap 'print_green "set_up.sh is done. Spent $(( (SECONDS - sta
 sudo -u "$user_name" ./install_bash_packages.sh
 
 mv ./dracula.omp.json ./install_pwsh_packages.ps1 "/home/$user_name"
+sleep 10
 sudo -u "$user_name" "/home/$user_name/install_pwsh_packages.ps1"

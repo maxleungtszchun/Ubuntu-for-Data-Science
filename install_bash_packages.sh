@@ -76,7 +76,9 @@ function install_r {
 		sudo nala install -y gdebi-core
 		export R_VERSION="$(curl -sL https://cran.r-project.org/src/base/R-4/ | tail -6 | grep -oE '<a href="R-.+\.tar\.gz">' | cut -c12-16)"
 		curl -sL https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.deb -o /tmp/r-${R_VERSION}_1_amd64.deb
-		sudo gdebi /tmp/r-${R_VERSION}_1_amd64.deb
+		yes | sudo gdebi /tmp/r-${R_VERSION}_1_amd64.deb
+		sudo ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
+		sudo ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 	fi
 	print_green 'installed r'
 }
@@ -84,8 +86,8 @@ function install_r {
 function install_r_packages {
 	sudo nala install -y libssl-dev libcurl4-openssl-dev unixodbc-dev libxml2-dev libmariadb-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev \
 		libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
-	Rscript -e 'install.packages(c("tidyverse", "tidymodels", "lubridate", "glmnet", "randomForest", "caret", "xgboost", "mlr3", "e1071"))'
-	Rscript -e 'install.packages(c("plm", "cquad", "sandwich", "lmtest", "ivreg", "fastDummies", "stargazer", "ordinal", "lavaan"))'
+	sudo Rscript -e 'install.packages(c("tidyverse", "tidymodels", "lubridate", "glmnet", "randomForest", "caret", "xgboost", "mlr3", "e1071"), repos="http://cran.us.r-project.org")'
+	sudo Rscript -e 'install.packages(c("plm", "cquad", "sandwich", "lmtest", "ivreg", "fastDummies", "stargazer", "ordinal", "lavaan"), repos="http://cran.us.r-project.org")'
 	print_green 'installed r packages'
 }
 
