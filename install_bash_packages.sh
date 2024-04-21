@@ -138,7 +138,7 @@ function install_ollama {
 	sudo sh -c "$(curl -fsSL https://ollama.com/install.sh)"
 	ollama serve &
 	sleep 10
-	ollama pull llama2
+	ollama pull llama3
 	kill %1
 	echo 'ollama serve &>/dev/null &' >> ~/.bashrc
 	print_green 'installed ollama'
@@ -169,7 +169,7 @@ cat >> ~/.bashrc <<-'EOF'
 	alias edit_profile="nano ~/.bashrc"
 	alias lm="ls -la"
 	alias cat="batcat -p"
-	alias llama2="ollama run llama2"
+	alias llama3="ollama run llama3"
 	# alias grep=rg
 	# alias locate=plocate
 	# alias btop="btop --utf-force"
