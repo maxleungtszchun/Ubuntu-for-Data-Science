@@ -28,3 +28,9 @@ sudo docker run -it -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su
 # use Ollama to chat with LLM (Llama3)
 llama3
 ```
+
+## Pull Image directly from Docker Hub
+You can pull the image directly from Docker Hub without building.
+```shell
+docker run -it -w /home/user --name ubuntu4ds "maxleung414/ubuntu4ds:latest" su user
+```
