@@ -31,6 +31,8 @@ llama3
 
 ## Pull Image directly from Docker Hub
 You can pull the image directly from Docker Hub without building.
+
+Note - Only support Arm64.
 ```shell
 docker run -it -w /home/user --name ubuntu4ds "maxleung414/ubuntu4ds:latest" su user
 ```
