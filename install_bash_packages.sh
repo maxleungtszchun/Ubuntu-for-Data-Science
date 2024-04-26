@@ -22,7 +22,7 @@ esac
 function install_apt_packages {
 	sudo apt update && sudo apt install -y nala
 	sudo nala install -y nano net-tools lsof iputils-ping dnsutils gpg curl file unzip psmisc man-db \
-		locate git tree cron default-jre bat jq libhdf5-dev cmake
+		locate git tree cron default-jre bat jq libhdf5-dev cmake wget libsndfile1
 		# btop plocate ripgrep gdu finger nginx ssh nmap ufw
 }
 
@@ -134,6 +134,20 @@ function install_spark {
 	print_green 'installed spark'
 }
 
+function install_sadtalker {
+	git clone --depth 1 https://github.com/OpenTalker/SadTalker.git ~/SadTalker
+	~/miniforge3/bin/conda create -n sadtalker python=3.8 ffmpeg -y
+	eval "$(~/miniforge3/bin/conda shell.posix activate sadtalker)"
+	pip install --no-input torch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 dlib -r ~/SadTalker/requirements.txt
+	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
+
+	chmod +x ~/SadTalker/scripts/download_models.sh
+	cd ~/SadTalker
+	~/SadTalker/scripts/download_models.sh
+	cd -
+	print_green 'installed sadtalker'
+}
+
 function install_ollama {
 	sudo sh -c "$(curl -fsSL https://ollama.com/install.sh)"
 	ollama serve &
@@ -156,6 +170,7 @@ function main {
 	install_conda
 	install_python_packages
 	install_spark
+	install_sadtalker
 	install_ollama
 }
 
