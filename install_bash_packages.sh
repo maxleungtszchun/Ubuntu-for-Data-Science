@@ -88,12 +88,13 @@ function install_r_packages {
 		libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
 
 	r_ds_packages='c("tidyverse", "tidymodels", "lubridate", "glmnet", "randomForest", "caret", "xgboost", "mlr3", "e1071")'
-	r_econometrics_packages='c("plm", "cquad", "sandwich", "lmtest", "ivreg", "fastDummies", "stargazer", "ordinal", "lavaan")'
+	r_econometrics_packages='c("plm", "cquad", "sandwich", "lmtest", "ivreg", "fastDummies", "stargazer")'
+	r_survey_packages='c("ordinal", "lavaan", "semPaths", "semPLS")'
 
 	if [ "$cpu_arch" = 'arm64' ]; then
-		Rscript -e "install.packages(c($r_ds_packages, $r_econometrics_packages), repos='http://cran.us.r-project.org')"
+		Rscript -e "install.packages(c($r_ds_packages, $r_econometrics_packages, $r_survey_packages), repos='http://cran.us.r-project.org')"
 	elif [ "$cpu_arch" = 'x64' ]; then
-		sudo Rscript -e "install.packages(c($r_ds_packages, $r_econometrics_packages), repos='http://cran.us.r-project.org')"
+		sudo Rscript -e "install.packages(c($r_ds_packages, $r_econometrics_packages, $r_survey_packages), repos='http://cran.us.r-project.org')"
 	fi
 
 	print_green 'installed r packages'
