@@ -139,6 +139,7 @@ function install_dbt {
 	eval "$(~/miniforge3/bin/conda shell.posix activate dbt)"
 	pip install --no-input dbt-core dbt-bigquery dbt-postgres
 	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
+	print_green 'installed dbt'
 }
 
 function install_sadtalker {
