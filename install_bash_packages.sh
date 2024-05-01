@@ -134,6 +134,13 @@ function install_spark {
 	print_green 'installed spark'
 }
 
+function install_dbt {
+	~/miniforge3/bin/conda create -n dbt python -y
+	eval "$(~/miniforge3/bin/conda shell.posix activate dbt)"
+	pip install --no-input dbt-core dbt-bigquery dbt-postgres
+	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
+}
+
 function install_sadtalker {
 	git clone --depth 1 https://github.com/OpenTalker/SadTalker.git ~/SadTalker
 	~/miniforge3/bin/conda create -n sadtalker python=3.8 ffmpeg -y
@@ -170,6 +177,7 @@ function main {
 	install_conda
 	install_python_packages
 	install_spark
+	install_dbt
 	install_sadtalker
 	install_ollama
 }
