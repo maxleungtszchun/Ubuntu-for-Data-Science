@@ -27,6 +27,10 @@ sudo docker run -it -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su
 
 # use Ollama to chat with LLM (Llama3)
 llama3
+
+# you can also visit http://localhost:8080 to use Llama3 with Open Webui
+# you can even use Stable Diffusion model in Open Webui by:
+# setting -> AUTOMATIC1111 Base URL = http://localhost:7860 -> turn on Image Generation (Experimental)
 ```
 
 ## Pull Image directly from Docker Hub

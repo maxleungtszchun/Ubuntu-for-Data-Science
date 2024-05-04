@@ -4,4 +4,6 @@ services:
     image: ubuntu:jammy
     command: "bash"
     network_mode: host
+    ports:
+      - 8080:8080
     restart: always
