@@ -145,7 +145,7 @@ function install_dbt {
 
 function install_npm {
 	bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh)"
-	~/.nvm/nvm.sh
+	. ~/.nvm/nvm.sh
 	nvm install --lts 18
 	nvm alias default 18
 	nvm use 18
@@ -179,7 +179,7 @@ function install_ollama {
 function install_open_webui {
 	git clone --depth 1 https://github.com/open-webui/open-webui.git ~/open-webui
 	cp -RPp ~/open-webui/.env.example ~/open-webui/.env
-	~/.nvm/nvm.sh
+	. ~/.nvm/nvm.sh
 	npm install ~/open-webui/
 	npm --prefix ~/open-webui/ run build
 	~/miniforge3/bin/conda create -n open_webui python -y
