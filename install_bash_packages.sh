@@ -22,7 +22,7 @@ esac
 function install_apt_packages {
 	sudo apt update && sudo apt install -y nala
 	sudo nala install -y nano net-tools lsof iputils-ping dnsutils gpg curl file unzip psmisc man-db \
-		locate git tree cron default-jre bat jq libhdf5-dev cmake wget libsndfile1 build-essential
+		locate git tree cron default-jre bat jq libhdf5-dev cmake wget libsndfile1 build-essential google-perftools
 		# btop plocate ripgrep gdu finger nginx ssh nmap ufw
 }
 
@@ -145,7 +145,7 @@ function install_dbt {
 
 function install_npm {
 	bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh)"
-	. ~/.nvm/nvm.sh
+	~/.nvm/nvm.sh
 	nvm install --lts 18
 	nvm alias default 18
 	nvm use 18
@@ -179,7 +179,7 @@ function install_ollama {
 function install_open_webui {
 	git clone --depth 1 https://github.com/open-webui/open-webui.git ~/open-webui
 	cp -RPp ~/open-webui/.env.example ~/open-webui/.env
-	. ~/.nvm/nvm.sh
+	~/.nvm/nvm.sh
 	npm install ~/open-webui/
 	npm --prefix ~/open-webui/ run build
 	~/miniforge3/bin/conda create -n open_webui python -y
@@ -192,6 +192,14 @@ function install_open_webui {
 		eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
 	EOF
 	print_green 'installed open webui'
+}
+
+function install_stable_diffusion_webui {
+	sudo nala install -y python3 python3-venv libgl1 libglib2.0-0
+	curl -sL https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui/master/webui.sh -o ~/webui.sh
+	chmod +x ~/webui.sh
+	echo '~/webui.sh --skip-torch-cuda-test --precision full --no-half --listen --api &>/dev/null &' >> ~/.bashrc
+	print_green 'installed stable diffusion webui'
 }
 
 function main {
@@ -211,6 +219,7 @@ function main {
 	install_sadtalker
 	install_ollama
 	install_open_webui
+	install_stable_diffusion_webui
 }
 
 main
