@@ -22,7 +22,7 @@ esac
 function install_apt_packages {
 	sudo apt update && sudo apt install -y nala
 	sudo nala install -y nano net-tools lsof iputils-ping dnsutils gpg curl file unzip psmisc man-db \
-		locate git tree cron default-jre bat jq libhdf5-dev cmake wget libsndfile1
+		locate git tree cron default-jre bat jq libhdf5-dev cmake wget libsndfile1 build-essential
 		# btop plocate ripgrep gdu finger nginx ssh nmap ufw
 }
 
@@ -143,6 +143,15 @@ function install_dbt {
 	print_green 'installed dbt'
 }
 
+function install_npm {
+	bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh)"
+	. ~/.nvm/nvm.sh
+	nvm install --lts 18
+	nvm alias default 18
+	nvm use 18
+	print_green 'installed npm'
+}
+
 function install_sadtalker {
 	git clone --depth 1 https://github.com/OpenTalker/SadTalker.git ~/SadTalker
 	~/miniforge3/bin/conda create -n sadtalker python=3.8 ffmpeg -y
@@ -167,6 +176,24 @@ function install_ollama {
 	print_green 'installed ollama'
 }
 
+function install_open_webui {
+	git clone --depth 1 https://github.com/open-webui/open-webui.git ~/open-webui
+	cp -RPp ~/open-webui/.env.example ~/open-webui/.env
+	. ~/.nvm/nvm.sh
+	npm install ~/open-webui/
+	npm --prefix ~/open-webui/ run build
+	~/miniforge3/bin/conda create -n open_webui python -y
+	eval "$(~/miniforge3/bin/conda shell.posix activate open_webui)"
+	pip install --no-input -r ~/open-webui/backend/requirements.txt
+	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
+	cat >> ~/.bashrc <<-'EOF'
+		eval "$(~/miniforge3/bin/conda shell.posix activate open_webui)"
+		bash ~/open-webui/backend/start.sh &>/dev/null &
+		eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
+	EOF
+	print_green 'installed open webui'
+}
+
 function main {
 	install_apt_packages
 	install_ohmyposh
@@ -180,8 +207,10 @@ function main {
 	install_python_packages
 	install_spark
 	install_dbt
+	install_npm
 	install_sadtalker
 	install_ollama
+	install_open_webui
 }
 
 main
