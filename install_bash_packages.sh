@@ -194,10 +194,10 @@ function install_open_webui {
 }
 
 function install_stable_diffusion_webui {
-	sudo nala install -y python3 python3-venv libgl1 libglib2.0-0
+	sudo nala install -y python3-dev python3-venv libgl1 libglib2.0-0
 	curl -sL https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui/master/webui.sh -o ~/webui.sh
 	chmod +x ~/webui.sh
-	echo '~/webui.sh --skip-torch-cuda-test --precision full --no-half --listen --api &>/dev/null &' >> ~/.bashrc
+	echo '~/webui.sh --skip-torch-cuda-test --precision full --no-half --listen --api &' >> ~/.bashrc
 	print_green 'installed stable diffusion webui'
 }
 
