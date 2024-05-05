@@ -179,8 +179,7 @@ function install_ollama {
 function install_open_webui {
 	git clone --depth 1 https://github.com/open-webui/open-webui.git ~/open-webui
 	cp -RPp ~/open-webui/.env.example ~/open-webui/.env
-	. ~/.nvm/nvm.sh
-	npm install ~/open-webui/
+	npm --prefix ~/open-webui/ install
 	npm --prefix ~/open-webui/ run build
 	~/miniforge3/bin/conda create -n open_webui python -y
 	eval "$(~/miniforge3/bin/conda shell.posix activate open_webui)"
