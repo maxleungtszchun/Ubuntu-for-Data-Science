@@ -23,7 +23,7 @@ sudo docker commit ubuntu4ds ubuntu4ds_image
 
 ## Example
 ```shell
-sudo docker run -it -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su <your-username>
+sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su <your-username>
 
 # use Ollama to chat with LLM (Llama3)
 llama3
