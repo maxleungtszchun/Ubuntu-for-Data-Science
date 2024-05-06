@@ -55,8 +55,8 @@ function install_docker {
 }
 
 function install_powershell {
-	pwsh_latest_version="$(curl -sL https://api.github.com/repos/PowerShell/PowerShell/releases/latest | jq .tag_name | tr -d 'v"')"
-	curl -sL "https://github.com/PowerShell/PowerShell/releases/download/v${pwsh_latest_version}/powershell-${pwsh_latest_version}-linux-${cpu_arch}.tar.gz" \
+	pwsh_latest_version="$(curl -fsSL https://api.github.com/repos/PowerShell/PowerShell/releases/latest | jq .tag_name | tr -d 'v"')"
+	curl -fsSL "https://github.com/PowerShell/PowerShell/releases/download/v${pwsh_latest_version}/powershell-${pwsh_latest_version}-linux-${cpu_arch}.tar.gz" \
 		-o /tmp/powershell.tar.gz
 	sudo mkdir -p /opt/microsoft/powershell/
 	sudo tar -xzvf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
@@ -68,14 +68,14 @@ function install_powershell {
 
 function install_r {
 	if [ "$cpu_arch" = 'arm64' ]; then
-		curl -sL https://github.com/r-lib/rig/releases/download/latest/rig-linux-arm64-latest.tar.gz -o /tmp/rig-linux-arm64-latest.tar.gz
+		curl -fsSL https://github.com/r-lib/rig/releases/download/latest/rig-linux-arm64-latest.tar.gz -o /tmp/rig-linux-arm64-latest.tar.gz
 		sudo tar -xzvf /tmp/rig-linux-arm64-latest.tar.gz -C /usr/local/
 		sudo rig add release
 		sudo rig default release
 	elif [ "$cpu_arch" = 'x64' ]; then
 		sudo nala install -y gdebi-core
-		export R_VERSION="$(curl -sL https://cran.r-project.org/src/base/R-4/ | tail -6 | grep -oE '<a href="R-.+\.tar\.gz">' | cut -c12-16)"
-		curl -sL https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.deb -o /tmp/r-${R_VERSION}_1_amd64.deb
+		export R_VERSION="$(curl -fsSL https://cran.r-project.org/src/base/R-4/ | tail -6 | grep -oE '<a href="R-.+\.tar\.gz">' | cut -c12-16)"
+		curl -fsSL https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.deb -o /tmp/r-${R_VERSION}_1_amd64.deb
 		yes | sudo gdebi /tmp/r-${R_VERSION}_1_amd64.deb
 		sudo ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
 		sudo ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
@@ -101,7 +101,7 @@ function install_r_packages {
 }
 
 function install_conda {
-	curl -sL "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" -o "/tmp/Miniforge3-$(uname)-$(uname -m).sh"
+	curl -fsSL "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" -o "/tmp/Miniforge3-$(uname)-$(uname -m).sh"
 	printf '%b' 'yes\nyes\n\nyes\n' | bash "/tmp/Miniforge3-$(uname)-$(uname -m).sh"
 	~/miniforge3/bin/conda init
 	echo 'changeps1: false' >> ~/miniforge3/.condarc
@@ -117,9 +117,9 @@ function install_python_packages {
 }
 
 function install_spark {
-	spark_latest_version="$(curl -sL https://archive.apache.org/dist/spark/ | tail -4 | grep -oE '<a href="spark-.+/">' \
+	spark_latest_version="$(curl -fsSL https://archive.apache.org/dist/spark/ | tail -4 | grep -oE '<a href="spark-.+/">' \
 		| tr -d '<a href="spark-' | tr -d '/>')"
-	curl -sL "https://archive.apache.org/dist/spark/spark-${spark_latest_version}/spark-${spark_latest_version}-bin-hadoop3.tgz" -o /tmp/spark.tgz
+	curl -fsSL "https://archive.apache.org/dist/spark/spark-${spark_latest_version}/spark-${spark_latest_version}-bin-hadoop3.tgz" -o /tmp/spark.tgz
 	sudo mkdir -p /opt/spark
 	sudo tar -xzvf /tmp/spark.tgz -C /opt/spark/
 	sudo mv "/opt/spark/spark-${spark_latest_version}-bin-hadoop3/" /opt/spark/spark/
@@ -187,7 +187,7 @@ function install_open_webui {
 	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
 	cat >> ~/.bashrc <<-'EOF'
 		eval "$(~/miniforge3/bin/conda shell.posix activate open_webui)"
-		bash ~/open-webui/backend/start.sh &>/dev/null &
+		~/open-webui/backend/start.sh &>/dev/null &
 		eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
 	EOF
 	print_green 'installed open webui'
@@ -195,7 +195,7 @@ function install_open_webui {
 
 function install_stable_diffusion_webui {
 	sudo nala install -y python3-dev python3-venv libgl1 libglib2.0-0
-	curl -sL https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui/master/webui.sh -o ~/webui.sh
+	curl -fsSL https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui/master/webui.sh -o ~/webui.sh
 	chmod +x ~/webui.sh
 	echo '~/webui.sh --skip-torch-cuda-test --precision full --no-half --listen --api &' >> ~/.bashrc
 	print_green 'installed stable diffusion webui'
