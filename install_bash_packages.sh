@@ -138,7 +138,7 @@ function install_spark {
 function install_dbt {
 	~/miniforge3/bin/conda create -n dbt python -y
 	eval "$(~/miniforge3/bin/conda shell.posix activate dbt)"
-	pip install --no-input dbt-core dbt-bigquery dbt-postgres
+	pip install --no-input dbt-core
 	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
 	print_green 'installed dbt'
 }
@@ -201,6 +201,20 @@ function install_stable_diffusion_webui {
 	print_green 'installed stable diffusion webui'
 }
 
+function install_fabric {
+	sudo nala install -y pipx ffmpeg
+	git clone --depth 1 https://github.com/danielmiessler/fabric.git ~/fabric
+	pipx install ~/fabric/.
+	printf '%b' '\n\n\n\n\n\n\n' | ~/.local/bin/fabric --setup
+	cat >> ~/.bashrc <<-'EOF'
+
+		export PATH="~/.local/bin:$PATH"
+		export DEFAULT_MODEL='llama3:latest'
+	EOF
+	rm -rf ~/fabric
+	print_green 'installed fabric'
+}
+
 function main {
 	install_apt_packages
 	install_ohmyposh
@@ -219,6 +233,7 @@ function main {
 	install_ollama
 	install_open_webui
 	install_stable_diffusion_webui
+	install_fabric
 }
 
 main
