@@ -28,6 +28,9 @@ sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/<your-username> --name ub
 # use Ollama to chat with LLM (Llama3)
 llama3
 
+# use fabric to chat with LLM (Llama3)
+echo 'what is llama3' | fabric -sp ai
+
 # you can also visit http://localhost:8080 to use Llama3 with Open Webui
 # you can even use Stable Diffusion model in Open Webui by:
 # setting -> AUTOMATIC1111 Base URL = http://localhost:7860 -> turn on Image Generation (Experimental)
