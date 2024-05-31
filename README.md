@@ -31,6 +31,9 @@ llama3
 # use fabric to chat with LLM (Llama3)
 echo 'what is llama3' | fabric -sp ai
 
+curl -fsSL https://upload.wikimedia.org/wikipedia/commons/1/1a/HKFactSheet_BasicLaw_122014.pdf -o ~/example.pdf
+pdftotext ~/example.pdf - | fabric -sp extract_wisdom
+
 # you can also visit http://localhost:8080 to use Llama3 with Open Webui
 # you can even use Stable Diffusion model in Open Webui by:
 # setting -> AUTOMATIC1111 Base URL = http://localhost:7860 -> turn on Image Generation (Experimental)

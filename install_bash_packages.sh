@@ -22,7 +22,7 @@ esac
 function install_apt_packages {
 	sudo apt update && sudo apt install -y nala
 	sudo nala install -y nano net-tools lsof iputils-ping dnsutils gpg curl file unzip psmisc man-db \
-		locate git tree cron default-jre bat jq libhdf5-dev cmake wget libsndfile1 build-essential google-perftools
+		locate git tree cron default-jre bat jq libhdf5-dev cmake wget libsndfile1 build-essential google-perftools poppler-utils ffmpeg
 		# btop plocate ripgrep gdu finger nginx ssh nmap ufw
 }
 
@@ -202,7 +202,7 @@ function install_stable_diffusion_webui {
 }
 
 function install_fabric {
-	sudo nala install -y pipx ffmpeg
+	sudo nala install -y pipx
 	git clone --depth 1 https://github.com/danielmiessler/fabric.git ~/fabric
 	pipx install ~/fabric/.
 	printf '%b' '\n\n\n\n\n\n\n' | ~/.local/bin/fabric --setup
