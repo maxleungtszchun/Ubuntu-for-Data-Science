@@ -247,6 +247,7 @@ cat >> ~/.bashrc <<-'EOF'
 	alias lm="ls -la"
 	alias cat="batcat -p"
 	alias llama3="ollama run llama3"
+	export BAT_THEME=Dracula
 	# alias grep=rg
 	# alias locate=plocate
 	# alias btop="btop --utf-force"
