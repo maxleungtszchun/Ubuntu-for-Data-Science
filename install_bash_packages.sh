@@ -35,8 +35,31 @@ function install_ohmyposh {
 function install_fzf {
 	git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 	yes | ~/.fzf/install
-	echo "export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'" >> ~/.bashrc
+	curl -fsSL https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh -o ~/fzf-git.sh
+	chmod +x ~/fzf-git.sh
+	cat >> ~/.bashrc <<-'EOF'
+		export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+		source ~/fzf-git.sh
+	EOF
 	print_green 'installed fzf'
+}
+
+function install_git_delta {
+	sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository)"
+	sudo nala install -y git-delta
+	cat >> ~/.gitconfig <<-'EOF'
+		[core]
+		    pager = delta
+		[interactive]
+		    diffFilter = delta --color-only
+		[delta]
+		    navigate = true
+		[merge]
+		    conflictstyle = diff3
+		[diff]
+		    colorMoved = default
+	EOF
+	print_green 'installed git_delta'
 }
 
 function install_z {
@@ -219,6 +242,7 @@ function main {
 	install_apt_packages
 	install_ohmyposh
 	install_fzf
+	install_git_delta
 	install_z
 	install_docker
 	install_powershell
