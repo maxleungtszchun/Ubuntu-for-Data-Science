@@ -9,11 +9,11 @@ function print_green { printf '%b' "\e[32m${1}\e[0m\n" 2>&1; }
 if [ -n "$1" ]; then
 	user_name="$1"
 else
-	read -p "Please input the user name: " user_name
+	read -p "Please input the username: " user_name
 fi
 
 user_name="${user_name// /}"
-[ -z "$user_name" ] && { print_error 'user name cannot be empty string'; exit 1; }
+[ -z "$user_name" ] && { print_error 'username cannot be empty string'; exit 1; }
 
 chmod +x ./set_up.sh ./add_user.sh ./install_bash_packages.sh ./install_pwsh_packages.ps1
 

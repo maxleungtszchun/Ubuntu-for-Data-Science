@@ -1,4 +1,3 @@
-version: "3"
 services:
   ubuntu4ds:
     image: ubuntu:jammy

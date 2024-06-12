@@ -21,9 +21,9 @@ esac
 
 function install_apt_packages {
 	sudo apt update && sudo apt install -y nala
-	sudo nala install -y nano net-tools lsof iputils-ping dnsutils gpg curl file unzip psmisc man-db \
-		locate git tree cron default-jre bat jq libhdf5-dev cmake wget libsndfile1 build-essential google-perftools poppler-utils ffmpeg
-		# btop plocate ripgrep gdu finger nginx ssh nmap ufw
+	sudo nala install -y nano net-tools lsof iputils-ping gpg curl wget file unzip psmisc man-db locate git tree bat jq \
+		build-essential cmake
+		# btop plocate ripgrep gdu finger nginx ssh nmap ufw dnsutils cron
 }
 
 function install_ohmyposh {
@@ -68,6 +68,14 @@ function install_z {
 	print_green 'installed z'
 }
 
+function install_eza {
+	curl -fsSL https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/gierens.gpg
+	echo "deb [arch=$(dpkg --print-architecture)] http://deb.gierens.de stable main" \
+		| sudo tee /etc/apt/sources.list.d/gierens.list >/dev/null
+	sudo nala update && sudo nala install -y eza
+	print_green 'installed eza'
+}
+
 function install_docker {
 	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg
 	echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
@@ -75,18 +83,6 @@ function install_docker {
 	sudo nala update && sudo nala install -y docker-ce docker-compose
 	sudo usermod -aG docker "$USER"
 	print_green 'installed docker'
-}
-
-function install_powershell {
-	pwsh_latest_version="$(curl -fsSL https://api.github.com/repos/PowerShell/PowerShell/releases/latest | jq .tag_name | tr -d 'v"')"
-	curl -fsSL "https://github.com/PowerShell/PowerShell/releases/download/v${pwsh_latest_version}/powershell-${pwsh_latest_version}-linux-${cpu_arch}.tar.gz" \
-		-o /tmp/powershell.tar.gz
-	sudo mkdir -p /opt/microsoft/powershell/
-	sudo tar -xzvf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
-	sudo chmod +x /opt/microsoft/powershell/pwsh
-	mkdir -p ~/.config/powershell
-	echo 'export PATH="/opt/microsoft/powershell:$PATH"' >> ~/.bashrc
-	print_green 'installed powershell'
 }
 
 function install_r {
@@ -106,21 +102,16 @@ function install_r {
 	print_green 'installed r'
 }
 
-function install_r_packages {
-	sudo nala install -y libssl-dev libcurl4-openssl-dev unixodbc-dev libxml2-dev libmariadb-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev \
-		libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
-
-	r_ds_packages='c("tidyverse", "tidymodels", "lubridate", "glmnet", "randomForest", "caret", "xgboost", "mlr3", "e1071")'
-	r_econometrics_packages='c("plm", "cquad", "sandwich", "lmtest", "ivreg", "fastDummies", "stargazer")'
-	r_survey_packages='c("ordinal", "lavaan", "semPaths", "semPLS")'
-
-	if [ "$cpu_arch" = 'arm64' ]; then
-		Rscript -e "install.packages(c($r_ds_packages, $r_econometrics_packages, $r_survey_packages), repos='http://cran.us.r-project.org')"
-	elif [ "$cpu_arch" = 'x64' ]; then
-		sudo Rscript -e "install.packages(c($r_ds_packages, $r_econometrics_packages, $r_survey_packages), repos='http://cran.us.r-project.org')"
-	fi
-
-	print_green 'installed r packages'
+function install_powershell {
+	pwsh_latest_version="$(curl -fsSL https://api.github.com/repos/PowerShell/PowerShell/releases/latest | jq .tag_name | tr -d 'v"')"
+	curl -fsSL "https://github.com/PowerShell/PowerShell/releases/download/v${pwsh_latest_version}/powershell-${pwsh_latest_version}-linux-${cpu_arch}.tar.gz" \
+		-o /tmp/powershell.tar.gz
+	sudo mkdir -p /opt/microsoft/powershell/
+	sudo tar -xzvf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
+	sudo chmod +x /opt/microsoft/powershell/pwsh
+	mkdir -p ~/.config/powershell
+	echo 'export PATH="/opt/microsoft/powershell:$PATH"' >> ~/.bashrc
+	print_green 'installed powershell'
 }
 
 function install_conda {
@@ -131,15 +122,8 @@ function install_conda {
 	print_green 'installed conda'
 }
 
-function install_python_packages {
-	~/miniforge3/bin/conda create -n ds_env python -y
-	eval "$(~/miniforge3/bin/conda shell.posix activate ds_env)"
-	pip install --no-input numpy scipy pandas tensorflow torch scikit-learn gensim spacy transformers langchain seaborn matplotlib "altair[all]"
-	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
-	print_green 'installed python packages'
-}
-
 function install_spark {
+	sudo nala install -y default-jre
 	spark_latest_version="$(curl -fsSL https://archive.apache.org/dist/spark/ | tail -4 | grep -oE '<a href="spark-.+/">' \
 		| tr -d '<a href="spark-' | tr -d '/>')"
 	curl -fsSL "https://archive.apache.org/dist/spark/spark-${spark_latest_version}/spark-${spark_latest_version}-bin-hadoop3.tgz" -o /tmp/spark.tgz
@@ -160,9 +144,7 @@ function install_spark {
 
 function install_dbt {
 	~/miniforge3/bin/conda create -n dbt python -y
-	eval "$(~/miniforge3/bin/conda shell.posix activate dbt)"
-	pip install --no-input dbt-core
-	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
+	~/miniforge3/envs/dbt/bin/pip install --no-input dbt-core
 	print_green 'installed dbt'
 }
 
@@ -178,9 +160,7 @@ function install_npm {
 function install_sadtalker {
 	git clone --depth 1 https://github.com/OpenTalker/SadTalker.git ~/SadTalker
 	~/miniforge3/bin/conda create -n sadtalker python=3.8 ffmpeg -y
-	eval "$(~/miniforge3/bin/conda shell.posix activate sadtalker)"
-	pip install --no-input torch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 dlib -r ~/SadTalker/requirements.txt
-	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
+	~/miniforge3/envs/sadtalker/bin/pip install --no-input torch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 dlib -r ~/SadTalker/requirements.txt
 
 	chmod +x ~/SadTalker/scripts/download_models.sh
 	cd ~/SadTalker
@@ -194,20 +174,20 @@ function install_ollama {
 	ollama serve &
 	sleep 10
 	ollama pull llama3
+	# ollama pull phi3:14b
 	kill %1
 	echo 'ollama serve &>/dev/null &' >> ~/.bashrc
 	print_green 'installed ollama'
 }
 
 function install_open_webui {
+	sudo nala install -y ffmpeg
 	git clone --depth 1 https://github.com/open-webui/open-webui.git ~/open-webui
 	cp -RPp ~/open-webui/.env.example ~/open-webui/.env
 	npm --prefix ~/open-webui/ install
 	npm --prefix ~/open-webui/ run build
-	~/miniforge3/bin/conda create -n open_webui python -y
-	eval "$(~/miniforge3/bin/conda shell.posix activate open_webui)"
-	pip install --no-input -r ~/open-webui/backend/requirements.txt
-	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
+	~/miniforge3/bin/conda create -n open_webui python=3.11 -y
+	~/miniforge3/envs/open_webui/bin/pip install --no-input -r ~/open-webui/backend/requirements.txt
 	cat >> ~/.bashrc <<-'EOF'
 		eval "$(~/miniforge3/bin/conda shell.posix activate open_webui)"
 		~/open-webui/backend/start.sh &>/dev/null &
@@ -217,7 +197,7 @@ function install_open_webui {
 }
 
 function install_stable_diffusion_webui {
-	sudo nala install -y python3-dev python3-venv libgl1 libglib2.0-0
+	sudo nala install -y python3-dev python3-venv libgl1 libglib2.0-0 libsndfile1 google-perftools
 	curl -fsSL https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui/master/webui.sh -o ~/webui.sh
 	chmod +x ~/webui.sh
 	echo '~/webui.sh --skip-torch-cuda-test --precision full --no-half --listen --api &' >> ~/.bashrc
@@ -244,14 +224,13 @@ function main {
 	install_fzf
 	install_git_delta
 	install_z
-	install_docker
+	install_eza
+	# install_docker
+	# install_r
 	install_powershell
-	install_r
-	install_r_packages
 	install_conda
-	install_python_packages
-	install_spark
-	install_dbt
+	# install_spark
+	# install_dbt
 	install_npm
 	install_sadtalker
 	install_ollama
@@ -267,17 +246,18 @@ sudo curl -fsSL https://gist.githubusercontent.com/benjamin-chan/4ef37955eabf5fa
 sudo curl -fsSL https://raw.githubusercontent.com/mitchell486/nanorc/master/powershell.nanorc -o /usr/share/nano/powershell.nanorc
 
 cat >> ~/.bashrc <<-'EOF'
+	export BAT_THEME=Dracula
 	alias edit_profile="nano ~/.bashrc"
-	alias lm="ls -la"
+	alias lm="eza --long --color=always --icons=always --all --no-filesize --no-user --no-time"
 	alias cat="batcat -p"
 	alias llama3="ollama run llama3"
-	export BAT_THEME=Dracula
+	# alias phi3="ollama run phi3:14b"
 	# alias grep=rg
 	# alias locate=plocate
 	# alias btop="btop --utf-force"
 EOF
 
-yes | sudo unminimize
+# yes | sudo unminimize
 sudo updatedb
 sudo rm -rf /tmp/*
 
