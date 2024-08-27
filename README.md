@@ -25,18 +25,18 @@ sudo docker commit ubuntu4ds ubuntu4ds_image
 ```shell
 sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su <your-username>
 
-# use Ollama to chat with LLM (Llama3)
-llama3
+# use Ollama to chat with LLM (Llama3.1 8b)
+llama
 
-# use fabric to chat with LLM (Llama3)
-echo 'what is llama3' | fabric -sp ai
+# use fabric to chat with LLM (Llama3.1 8b)
+echo 'what is llama3.1' | fabric -sp ai
 
 curl -fsSL https://upload.wikimedia.org/wikipedia/commons/1/1a/HKFactSheet_BasicLaw_122014.pdf -o ~/example.pdf
 pdftotext ~/example.pdf - | fabric -sp extract_wisdom
 
-# you can also visit http://localhost:8080 to use Llama3 with Open Webui
+# you can also visit http://localhost:8080 to use Llama3.1 with Open Webui
 # you can even use Stable Diffusion model in Open Webui by:
-# setting -> AUTOMATIC1111 Base URL = http://localhost:7860 -> turn on Image Generation (Experimental)
+# setting -> admin settings -> images -> image generation engine = automatic1111 -> Base URL = http://localhost:7860 -> turn on Image Generation (Experimental) -> save
 ```
 
 ## Pull Image directly from Docker Hub

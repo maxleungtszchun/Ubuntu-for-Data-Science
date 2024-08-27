@@ -23,12 +23,12 @@ function install_apt_packages {
 	sudo apt update && sudo apt install -y nala
 	sudo nala install -y nano net-tools lsof iputils-ping gpg curl wget file unzip psmisc man-db locate git tree bat jq \
 		build-essential cmake
-		# btop plocate ripgrep gdu finger nginx ssh nmap ufw dnsutils cron
+		# btop plocate ripgrep gdu finger nginx ssh nmap ufw dnsutils cron poppler-utils
 }
 
 function install_ohmyposh {
-	sudo bash -c "$(curl -fsSL https://ohmyposh.dev/install.sh)"
-	echo 'eval "$(oh-my-posh init bash --config ~/dracula.omp.json)"' >> ~/.bashrc
+	bash -c "$(curl -fsSL https://ohmyposh.dev/install.sh)"
+	echo 'eval "$(~/.local/bin/oh-my-posh init bash --config ~/dracula.omp.json)"' >> ~/.bashrc
 	print_green 'installed oh-my-posh'
 }
 
@@ -173,7 +173,7 @@ function install_ollama {
 	sudo sh -c "$(curl -fsSL https://ollama.com/install.sh)"
 	ollama serve &
 	sleep 10
-	ollama pull llama3
+	ollama pull llama3.1
 	# ollama pull phi3:14b
 	kill %1
 	echo 'ollama serve &>/dev/null &' >> ~/.bashrc
@@ -204,17 +204,35 @@ function install_stable_diffusion_webui {
 	print_green 'installed stable diffusion webui'
 }
 
-function install_fabric {
-	sudo nala install -y pipx
-	git clone --depth 1 https://github.com/danielmiessler/fabric.git ~/fabric
-	pipx install ~/fabric/.
-	printf '%b' '\n\n\n\n\n\n\n' | ~/.local/bin/fabric --setup
-	cat >> ~/.bashrc <<-'EOF'
+function install_go {
+	if [ "$cpu_arch" = 'arm64' ]; then
+		curl -fsSL https://go.dev/dl/go1.23.0.linux-arm64.tar.gz -o ~/go.tar.gz
+	elif [ "$cpu_arch" = 'x64' ]; then
+		curl -fsSL https://go.dev/dl/go1.23.0.linux-amd64.tar.gz -o ~/go.tar.gz
+	fi
+	sudo tar -xzvf ~/go.tar.gz -C /usr/local/
+	echo 'export PATH="/usr/local/go/bin:$PATH"' >> ~/.bashrc
+	print_green 'installed go'
+}
 
-		export PATH="~/.local/bin:$PATH"
-		export DEFAULT_MODEL='llama3:latest'
+function install_fabric {
+	/usr/local/go/bin/go install github.com/danielmiessler/fabric@latest
+
+	mkdir -p ~/.config/fabric/
+	cat >> ~/.config/fabric/.env <<-'EOF'
+		DEFAULT_VENDOR=Ollama
+		DEFAULT_MODEL=llama3.1:latest
+		PATTERNS_LOADER_GIT_REPO_URL=https://github.com/danielmiessler/fabric.git
+		PATTERNS_LOADER_GIT_REPO_PATTERNS_FOLDER=patterns
+		OLLAMA_API_URL=http://localhost:11434
 	EOF
-	rm -rf ~/fabric
+
+	cat >> ~/.bashrc <<-'EOF'
+		export GOROOT=/usr/local/go
+		export GOPATH=~/go
+		export PATH="$GOPATH/bin:$GOROOT/bin:~/.local/bin:$PATH"
+		fabric -U &>/dev/null
+	EOF
 	print_green 'installed fabric'
 }
 
@@ -236,6 +254,7 @@ function main {
 	install_ollama
 	install_open_webui
 	install_stable_diffusion_webui
+	install_go
 	install_fabric
 }
 
@@ -248,9 +267,9 @@ sudo curl -fsSL https://raw.githubusercontent.com/mitchell486/nanorc/master/powe
 cat >> ~/.bashrc <<-'EOF'
 	export BAT_THEME=Dracula
 	alias edit_profile="nano ~/.bashrc"
-	alias lm="eza --long --color=always --icons=always --all --no-filesize --no-user --no-time"
+	alias lm="eza --long --color=always --icons=always --all"
 	alias cat="batcat -p"
-	alias llama3="ollama run llama3"
+	alias llama="ollama run llama3.1"
 	# alias phi3="ollama run phi3:14b"
 	# alias grep=rg
 	# alias locate=plocate
