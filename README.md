@@ -11,7 +11,7 @@ Support both Arm64 and X64 CPU architecture.
 git clone --depth 1 https://github.com/maxleungtszchun/Ubuntu-for-Data-Science.git
 cd ./Ubuntu-for-Data-Science
 chmod +x ./ubuntu4ds.sh
-./ubuntu4ds.sh
+sudo ./ubuntu4ds.sh
 ```
 
 After inputting the above code to your terminal, you only need to choose your username and password and wait for the scripts to complete.
@@ -42,7 +42,11 @@ pdftotext ~/example.pdf - | fabric -sp extract_wisdom
 ## Pull Image directly from Docker Hub
 You can pull the image directly from Docker Hub without building.
 
-Note - Only support Arm64.
 ```shell
+# for Arm64 CPU
 sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/user --name ubuntu4ds "maxleung414/ubuntu4ds:latest" su user
+
+# for X64 CPU
+sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/user --name ubuntu4ds "ml414/ubuntu4ds:latest" su user
+
 ```
