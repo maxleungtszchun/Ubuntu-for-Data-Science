@@ -211,6 +211,7 @@ function install_go {
 		curl -fsSL https://go.dev/dl/go1.23.0.linux-amd64.tar.gz -o ~/go.tar.gz
 	fi
 	sudo tar -xzvf ~/go.tar.gz -C /usr/local/
+	rm -rf ~/go.tar.gz
 	echo 'export PATH="/usr/local/go/bin:$PATH"' >> ~/.bashrc
 	print_green 'installed go'
 }
@@ -219,7 +220,7 @@ function install_fabric {
 	/usr/local/go/bin/go install github.com/danielmiessler/fabric@latest
 
 	mkdir -p ~/.config/fabric/
-	cat >> ~/.config/fabric/.env <<-'EOF'
+	cat > ~/.config/fabric/.env <<-'EOF'
 		DEFAULT_VENDOR=Ollama
 		DEFAULT_MODEL=llama3.1:latest
 		PATTERNS_LOADER_GIT_REPO_URL=https://github.com/danielmiessler/fabric.git

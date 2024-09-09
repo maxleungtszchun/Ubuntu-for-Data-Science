@@ -31,8 +31,16 @@ llama
 # use fabric to chat with LLM (Llama3.1 8b)
 echo 'what is llama3.1' | fabric -sp ai
 
+cat > ~/ModelFile <<-'EOF'
+	FROM llama3.1:latest
+	PARAMETER num_ctx 15000
+	PARAMETER temperature 0
+EOF
+ollama create llama3.1_ctx_15000 -f ~/ModelFile
+
+sudo nala update && sudo nala install -y poppler-utils
 curl -fsSL https://upload.wikimedia.org/wikipedia/commons/1/1a/HKFactSheet_BasicLaw_122014.pdf -o ~/example.pdf
-pdftotext ~/example.pdf - | fabric -sp extract_wisdom
+pdftotext ~/example.pdf - | fabric --model llama3.1_ctx_15000:latest -sp extract_wisdom
 
 # you can also visit http://localhost:8080 to use Llama3.1 with Open Webui
 # you can even use Stable Diffusion model in Open Webui by:
