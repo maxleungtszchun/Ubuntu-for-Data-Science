@@ -173,8 +173,8 @@ function install_ollama {
 	sudo sh -c "$(curl -fsSL https://ollama.com/install.sh)"
 	ollama serve &
 	sleep 10
-	ollama pull llama3.1
-	# ollama pull phi3:14b
+	ollama pull qwen2.5:7b
+	# ollama pull llama3.1
 	kill %1
 	echo 'ollama serve &>/dev/null &' >> ~/.bashrc
 	print_green 'installed ollama'
@@ -222,7 +222,7 @@ function install_fabric {
 	mkdir -p ~/.config/fabric/
 	cat > ~/.config/fabric/.env <<-'EOF'
 		DEFAULT_VENDOR=Ollama
-		DEFAULT_MODEL=llama3.1:latest
+		DEFAULT_MODEL=qwen2.5:7b
 		PATTERNS_LOADER_GIT_REPO_URL=https://github.com/danielmiessler/fabric.git
 		PATTERNS_LOADER_GIT_REPO_PATTERNS_FOLDER=patterns
 		OLLAMA_API_URL=http://localhost:11434
@@ -270,8 +270,7 @@ cat >> ~/.bashrc <<-'EOF'
 	alias edit_profile="nano ~/.bashrc"
 	alias lm="eza --long --color=always --icons=always --all"
 	alias cat="batcat -p"
-	alias llama="ollama run llama3.1"
-	# alias phi3="ollama run phi3:14b"
+	alias qwen="ollama run qwen2.5:7b"
 	# alias grep=rg
 	# alias locate=plocate
 	# alias btop="btop --utf-force"
@@ -280,5 +279,6 @@ EOF
 # yes | sudo unminimize
 sudo updatedb
 sudo rm -rf /tmp/*
+rm -rf ~/.cache/*
 
 print_green 'install.sh is done'

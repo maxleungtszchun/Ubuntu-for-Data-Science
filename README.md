@@ -1,5 +1,5 @@
 # Ubuntu Container for Data Science
-This repo includes scripts for building an Ubuntu Docker container for data science. It includes commonly used data science and machine learning tools and packages e.g., R, Conda, Python, Spark, Ollama, etc. The details can be found in `install_bash_packages.sh`.
+This repo includes scripts for building an Ubuntu Docker container for data science. It includes commonly used data science and machine learning tools. The details can be found in `install_bash_packages.sh`.
 
 You can commit the container as an image, so you can pull the image to have a new Ubuntu environment when you want to test something out.
 
@@ -25,24 +25,28 @@ sudo docker commit ubuntu4ds ubuntu4ds_image
 ```shell
 sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su <your-username>
 
-# use Ollama to chat with LLM (Llama3.1 8b)
-llama
-
-# use fabric to chat with LLM (Llama3.1 8b)
-echo 'what is llama3.1' | fabric -sp ai
+echo 'what is qwen2.5' | fabric -sp ai
 
 cat > ~/ModelFile <<-'EOF'
-	FROM llama3.1:latest
+	FROM qwen2.5:7b
 	PARAMETER num_ctx 15000
 	PARAMETER temperature 0
 EOF
-ollama create llama3.1_ctx_15000 -f ~/ModelFile
+ollama create qwen2.5_ctx_15000 -f ~/ModelFile
 
 sudo nala update && sudo nala install -y poppler-utils
 curl -fsSL https://upload.wikimedia.org/wikipedia/commons/1/1a/HKFactSheet_BasicLaw_122014.pdf -o ~/example.pdf
-pdftotext ~/example.pdf - | fabric --model llama3.1_ctx_15000:latest -sp extract_wisdom
+pdftotext ~/example.pdf - | fabric --model qwen2.5_ctx_15000:latest -sp extract_wisdom
 
-# you can also visit http://localhost:8080 to use Llama3.1 with Open Webui
+echo 'Bachelor’s degree in Mathematics, Information Engineering, Statistics, Marketing or other relevant disciplines
+3+ years of relevant work experience in a similar function from a sizable company. Experience and interest in the travel and hospitality industry will be an advantage
+Proficiency in scripting languages (SAS, SQL) is a must
+Proficiency in data visualization tools (especially Tableau) is a must
+Ability to write queries / programs and experience with R or Python will be an advantage
+Experience with statistics modelling, such as decision tree, regression, clustering etc. will also be an advantage
+A team player with strong time management skills and great attention to detail' | fabric --model qwen2.5_ctx_15000:latest -sp extract_skills
+
+# you can also visit http://localhost:8080 to use Open Webui
 # you can even use Stable Diffusion model in Open Webui by:
 # setting -> admin settings -> images -> image generation engine = automatic1111 -> Base URL = http://localhost:7860 -> turn on Image Generation (Experimental) -> save
 ```
