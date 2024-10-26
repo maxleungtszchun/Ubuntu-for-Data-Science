@@ -22,8 +22,8 @@ esac
 function install_apt_packages {
 	sudo apt update && sudo apt install -y nala
 	sudo nala install -y nano net-tools lsof iputils-ping gpg curl wget file unzip psmisc man-db locate git tree bat jq \
-		build-essential cmake
-		# btop plocate ripgrep gdu finger nginx ssh nmap ufw dnsutils cron poppler-utils
+		build-essential cmake poppler-utils
+		# btop plocate ripgrep gdu finger nginx ssh nmap ufw dnsutils cron
 }
 
 function install_ohmyposh {
@@ -170,11 +170,16 @@ function install_sadtalker {
 }
 
 function install_ollama {
-	sudo sh -c "$(curl -fsSL https://ollama.com/install.sh)"
+	# sudo sh -c "$(curl -fsSL https://ollama.com/install.sh)"
+	curl -fsSL https://github.com/ollama/ollama/releases/download/v0.4.0-rc5/ollama-linux-arm64.tgz -o ~/ollama-linux-arm64.tgz
+	sudo tar -xzvf ~/ollama-linux-arm64.tgz -C /usr/local/
+	rm -rf ~/ollama-linux-arm64.tgz
+
 	ollama serve &
 	sleep 10
-	ollama pull qwen2.5:7b
-	# ollama pull llama3.1
+	# ollama pull qwen2.5:7b
+	# ollama pull qwen2.5:14b
+	ollama pull x/llama3.2-vision
 	kill %1
 	echo 'ollama serve &>/dev/null &' >> ~/.bashrc
 	print_green 'installed ollama'
@@ -222,7 +227,7 @@ function install_fabric {
 	mkdir -p ~/.config/fabric/
 	cat > ~/.config/fabric/.env <<-'EOF'
 		DEFAULT_VENDOR=Ollama
-		DEFAULT_MODEL=qwen2.5:7b
+		DEFAULT_MODEL=x/llama3.2-vision
 		PATTERNS_LOADER_GIT_REPO_URL=https://github.com/danielmiessler/fabric.git
 		PATTERNS_LOADER_GIT_REPO_PATTERNS_FOLDER=patterns
 		OLLAMA_API_URL=http://localhost:11434
@@ -251,7 +256,7 @@ function main {
 	# install_spark
 	# install_dbt
 	install_npm
-	install_sadtalker
+	# install_sadtalker
 	install_ollama
 	install_open_webui
 	install_stable_diffusion_webui
@@ -270,7 +275,6 @@ cat >> ~/.bashrc <<-'EOF'
 	alias edit_profile="nano ~/.bashrc"
 	alias lm="eza --long --color=always --icons=always --all"
 	alias cat="batcat -p"
-	alias qwen="ollama run qwen2.5:7b"
 	# alias grep=rg
 	# alias locate=plocate
 	# alias btop="btop --utf-force"

@@ -25,18 +25,20 @@ sudo docker commit ubuntu4ds ubuntu4ds_image
 ```shell
 sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su <your-username>
 
-echo 'what is qwen2.5' | fabric -sp ai
+curl -fsSL https://storage.googleapis.com/generativeai-downloads/images/cake.jpg -O ~/cake.jpg
+ollama run x/llama3.2-vision "is it a cake? /home/user/cake.jpg"
+
+echo 'what is llama3.2' | fabric -sp ai
 
 cat > ~/ModelFile <<-'EOF'
-	FROM qwen2.5:7b
+	FROM x/llama3.2-vision
 	PARAMETER num_ctx 15000
 	PARAMETER temperature 0
 EOF
-ollama create qwen2.5_ctx_15000 -f ~/ModelFile
+ollama create llama3.2-vision_15000 -f ~/ModelFile
 
-sudo nala update && sudo nala install -y poppler-utils
 curl -fsSL https://upload.wikimedia.org/wikipedia/commons/1/1a/HKFactSheet_BasicLaw_122014.pdf -o ~/example.pdf
-pdftotext ~/example.pdf - | fabric --model qwen2.5_ctx_15000:latest -sp extract_wisdom
+pdftotext ~/example.pdf - | fabric --model llama3.2-vision_15000:latest -sp extract_wisdom
 
 echo 'Bachelor’s degree in Mathematics, Information Engineering, Statistics, Marketing or other relevant disciplines
 3+ years of relevant work experience in a similar function from a sizable company. Experience and interest in the travel and hospitality industry will be an advantage
@@ -44,7 +46,7 @@ Proficiency in scripting languages (SAS, SQL) is a must
 Proficiency in data visualization tools (especially Tableau) is a must
 Ability to write queries / programs and experience with R or Python will be an advantage
 Experience with statistics modelling, such as decision tree, regression, clustering etc. will also be an advantage
-A team player with strong time management skills and great attention to detail' | fabric --model qwen2.5_ctx_15000:latest -sp extract_skills
+A team player with strong time management skills and great attention to detail' | fabric --model llama3.2-vision_15000:latest -sp extract_skills
 
 # you can also visit http://localhost:8080 to use Open Webui
 # you can even use Stable Diffusion model in Open Webui by:
