@@ -170,16 +170,17 @@ function install_sadtalker {
 }
 
 function install_ollama {
-	# sudo sh -c "$(curl -fsSL https://ollama.com/install.sh)"
-	curl -fsSL https://github.com/ollama/ollama/releases/download/v0.4.0-rc5/ollama-linux-arm64.tgz -o ~/ollama-linux-arm64.tgz
-	sudo tar -xzvf ~/ollama-linux-arm64.tgz -C /usr/local/
-	rm -rf ~/ollama-linux-arm64.tgz
+	sudo sh -c "$(curl -fsSL https://ollama.com/install.sh)"
+	# curl -fsSL https://github.com/ollama/ollama/releases/download/v0.4.0-rc5/ollama-linux-arm64.tgz -o ~/ollama-linux-arm64.tgz
+	# sudo tar -xzvf ~/ollama-linux-arm64.tgz -C /usr/local/
+	# rm -rf ~/ollama-linux-arm64.tgz
 
 	ollama serve &
 	sleep 10
 	# ollama pull qwen2.5:7b
 	# ollama pull qwen2.5:14b
-	ollama pull x/llama3.2-vision
+	# ollama pull x/llama3.2-vision
+	ollama pull llama3.2-vision
 	kill %1
 	echo 'ollama serve &>/dev/null &' >> ~/.bashrc
 	print_green 'installed ollama'
@@ -227,7 +228,7 @@ function install_fabric {
 	mkdir -p ~/.config/fabric/
 	cat > ~/.config/fabric/.env <<-'EOF'
 		DEFAULT_VENDOR=Ollama
-		DEFAULT_MODEL=x/llama3.2-vision
+		DEFAULT_MODEL=llama3.2-vision
 		PATTERNS_LOADER_GIT_REPO_URL=https://github.com/danielmiessler/fabric.git
 		PATTERNS_LOADER_GIT_REPO_PATTERNS_FOLDER=patterns
 		OLLAMA_API_URL=http://localhost:11434

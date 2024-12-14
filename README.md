@@ -26,12 +26,12 @@ sudo docker commit ubuntu4ds ubuntu4ds_image
 sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su <your-username>
 
 curl -fsSL https://storage.googleapis.com/generativeai-downloads/images/cake.jpg -O ~/cake.jpg
-ollama run x/llama3.2-vision "is it a cake? /home/user/cake.jpg"
+ollama run llama3.2-vision "is it a cake? /home/user/cake.jpg"
 
 echo 'what is llama3.2' | fabric -sp ai
 
 cat > ~/ModelFile <<-'EOF'
-	FROM x/llama3.2-vision
+	FROM llama3.2-vision
 	PARAMETER num_ctx 15000
 	PARAMETER temperature 0
 EOF
