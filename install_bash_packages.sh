@@ -181,6 +181,7 @@ function install_ollama {
 	# ollama pull qwen2.5:14b
 	# ollama pull x/llama3.2-vision
 	ollama pull llama3.2-vision
+	ollama pull deepseek-v2:16b
 	kill %1
 	echo 'ollama serve &>/dev/null &' >> ~/.bashrc
 	print_green 'installed ollama'
@@ -243,6 +244,20 @@ function install_fabric {
 	print_green 'installed fabric'
 }
 
+function install_aider {
+	sh -c "$(curl -fsSL https://aider.chat/install.sh)"
+	cat >> ~/.bashrc <<-'EOF'
+		export PATH="~/.local/bin:$PATH"
+		export OLLAMA_API_BASE=http://127.0.0.1:11434
+	EOF
+
+	cat > ~/.aider.conf.yml <<-'EOF'
+		model: ollama/deepseek-v2:16b
+		dark-mode: true
+	EOF
+	print_green 'installed aider'
+}
+
 function main {
 	install_apt_packages
 	install_ohmyposh
@@ -263,6 +278,7 @@ function main {
 	install_stable_diffusion_webui
 	install_go
 	install_fabric
+	install_aider
 }
 
 main
