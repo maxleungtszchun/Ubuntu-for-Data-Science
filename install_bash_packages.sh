@@ -116,7 +116,7 @@ function install_powershell {
 
 function install_conda {
 	curl -fsSL "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" -o "/tmp/Miniforge3-$(uname)-$(uname -m).sh"
-	printf '%b' 'yes\nyes\n\nyes\n' | bash "/tmp/Miniforge3-$(uname)-$(uname -m).sh"
+	printf '%b' 'yes\nyes\n\nno\n' | bash "/tmp/Miniforge3-$(uname)-$(uname -m).sh"
 	~/miniforge3/bin/conda init
 	echo 'changeps1: false' >> ~/miniforge3/.condarc
 	print_green 'installed conda'
@@ -179,25 +179,31 @@ function install_ollama {
 	sleep 10
 	# ollama pull qwen2.5:7b
 	# ollama pull qwen2.5:14b
-	# ollama pull x/llama3.2-vision
 	ollama pull llama3.2-vision
-	ollama pull deepseek-v2:16b
+	ollama pull deepseek-r1:14b
 	kill %1
 	echo 'ollama serve &>/dev/null &' >> ~/.bashrc
 	print_green 'installed ollama'
 }
 
 function install_open_webui {
-	sudo nala install -y ffmpeg
-	git clone --depth 1 https://github.com/open-webui/open-webui.git ~/open-webui
-	cp -RPp ~/open-webui/.env.example ~/open-webui/.env
-	npm --prefix ~/open-webui/ install
-	npm --prefix ~/open-webui/ run build
+	# sudo nala install -y ffmpeg
+	# git clone --depth 1 https://github.com/open-webui/open-webui.git ~/open-webui
+	# cp -RPp ~/open-webui/.env.example ~/open-webui/.env
+	# npm --prefix ~/open-webui/ install
+	# npm --prefix ~/open-webui/ run build
+	# ~/miniforge3/bin/conda create -n open_webui python=3.11 -y
+	# ~/miniforge3/envs/open_webui/bin/pip install --no-input -r ~/open-webui/backend/requirements.txt
+	# cat >> ~/.bashrc <<-'EOF'
+	# 	eval "$(~/miniforge3/bin/conda shell.posix activate open_webui)"
+	# 	~/open-webui/backend/start.sh &>/dev/null &
+	# 	eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
+	# EOF
 	~/miniforge3/bin/conda create -n open_webui python=3.11 -y
-	~/miniforge3/envs/open_webui/bin/pip install --no-input -r ~/open-webui/backend/requirements.txt
+	~/miniforge3/envs/open_webui/bin/pip install --no-input open-webui
 	cat >> ~/.bashrc <<-'EOF'
 		eval "$(~/miniforge3/bin/conda shell.posix activate open_webui)"
-		~/open-webui/backend/start.sh &>/dev/null &
+		open-webui serve &>/dev/null &
 		eval "$(~/miniforge3/bin/conda shell.posix deactivate)"
 	EOF
 	print_green 'installed open webui'
@@ -252,7 +258,7 @@ function install_aider {
 	EOF
 
 	cat > ~/.aider.conf.yml <<-'EOF'
-		model: ollama/deepseek-v2:16b
+		model: ollama/deepseek-r1:14b
 		dark-mode: true
 	EOF
 	print_green 'installed aider'
@@ -271,7 +277,7 @@ function main {
 	install_conda
 	# install_spark
 	# install_dbt
-	install_npm
+	# install_npm
 	# install_sadtalker
 	install_ollama
 	install_open_webui
