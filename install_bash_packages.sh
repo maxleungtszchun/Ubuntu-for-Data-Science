@@ -264,6 +264,12 @@ function install_aider {
 	print_green 'installed aider'
 }
 
+function install_docling {
+	~/miniforge3/bin/conda create -n docling python -y
+	~/miniforge3/envs/docling/bin/pip install --no-input docling
+	print_green 'installed docling'
+}
+
 function main {
 	install_apt_packages
 	install_ohmyposh
@@ -284,7 +290,8 @@ function main {
 	install_stable_diffusion_webui
 	install_go
 	install_fabric
-	install_aider
+	# install_aider
+	install_docling
 }
 
 main

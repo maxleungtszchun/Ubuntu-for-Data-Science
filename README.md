@@ -25,7 +25,7 @@ sudo docker commit ubuntu4ds ubuntu4ds_image
 ```shell
 sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su <your-username>
 
-curl -fsSL https://storage.googleapis.com/generativeai-downloads/images/cake.jpg -O ~/cake.jpg
+curl -fsSL https://storage.googleapis.com/generativeai-downloads/images/cake.jpg -o ~/cake.jpg
 ollama run llama3.2-vision "is it a cake? /home/user/cake.jpg"
 
 echo 'what is llama3.2' | fabric -sp ai
@@ -37,8 +37,8 @@ cat > ~/ModelFile <<-'EOF'
 EOF
 ollama create llama3.2-vision_15000 -f ~/ModelFile
 
-curl -fsSL https://upload.wikimedia.org/wikipedia/commons/1/1a/HKFactSheet_BasicLaw_122014.pdf -o ~/example.pdf
-pdftotext ~/example.pdf - | fabric --model llama3.2-vision_15000:latest -sp extract_wisdom
+~/miniforge3/envs/docling/bin/docling --from pdf --to text --output ~ https://upload.wikimedia.org/wikipedia/commons/1/1a/HKFactSheet_BasicLaw_122014.pdf
+cat ~/HKFactSheet_BasicLaw_122014.txt | fabric --model llama3.2-vision_15000:latest -sp extract_wisdom
 
 echo 'Bachelor’s degree in Mathematics, Information Engineering, Statistics, Marketing or other relevant disciplines
 3+ years of relevant work experience in a similar function from a sizable company. Experience and interest in the travel and hospitality industry will be an advantage
