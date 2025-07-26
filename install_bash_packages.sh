@@ -148,12 +148,12 @@ function install_dbt {
 	print_green 'installed dbt'
 }
 
-function install_npm {
-	bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh)"
+function install_nvm {
+	bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh)"
 	. ~/.nvm/nvm.sh
-	nvm install --lts 18
-	nvm alias default 18
-	nvm use 18
+	nvm install --lts 22
+	nvm alias default 22
+	nvm use 22
 	print_green 'installed npm'
 }
 
@@ -177,10 +177,9 @@ function install_ollama {
 
 	ollama serve &
 	sleep 10
-	# ollama pull qwen2.5:7b
-	# ollama pull qwen2.5:14b
+	ollama pull qwen3:14b
 	ollama pull llama3.2-vision
-	ollama pull deepseek-r1:14b
+	# ollama pull deepseek-r1:14b
 	kill %1
 	echo 'ollama serve &>/dev/null &' >> ~/.bashrc
 	print_green 'installed ollama'
@@ -230,7 +229,7 @@ function install_go {
 }
 
 function install_fabric {
-	/usr/local/go/bin/go install github.com/danielmiessler/fabric@latest
+	/usr/local/go/bin/go install github.com/danielmiessler/fabric/cmd/fabric@latest
 
 	mkdir -p ~/.config/fabric/
 	cat > ~/.config/fabric/.env <<-'EOF'
@@ -270,6 +269,12 @@ function install_docling {
 	print_green 'installed docling'
 }
 
+function install_n8n {
+	nvm use 22
+	npm install n8n -g
+	print_green 'installed n8n'
+}
+
 function main {
 	install_apt_packages
 	install_ohmyposh
@@ -283,7 +288,7 @@ function main {
 	install_conda
 	# install_spark
 	# install_dbt
-	# install_npm
+	install_nvm
 	# install_sadtalker
 	install_ollama
 	install_open_webui
@@ -292,6 +297,7 @@ function main {
 	install_fabric
 	# install_aider
 	install_docling
+	install_n8n
 }
 
 main
@@ -302,6 +308,7 @@ sudo curl -fsSL https://raw.githubusercontent.com/mitchell486/nanorc/master/powe
 
 cat >> ~/.bashrc <<-'EOF'
 	export BAT_THEME=Dracula
+	export N8N_RUNNERS_ENABLED=true
 	alias edit_profile="nano ~/.bashrc"
 	alias lm="eza --long --color=always --icons=always --all"
 	alias cat="batcat -p"

@@ -23,7 +23,7 @@ sudo docker commit ubuntu4ds ubuntu4ds_image
 
 ## Example
 ```shell
-sudo docker run -it -p 8080:8080 -p 7860:7860 -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su <your-username>
+sudo docker run -it -p 8080:8080 -p 7860:7860 -p 5678:5678 -w /home/<your-username> --name ubuntu4ds ubuntu4ds_image su <your-username>
 
 curl -fsSL https://storage.googleapis.com/generativeai-downloads/images/cake.jpg -o ~/cake.jpg
 ollama run llama3.2-vision "is it a cake? /home/user/cake.jpg"
