@@ -154,7 +154,7 @@ function install_nvm {
 	nvm install --lts 22
 	nvm alias default 22
 	nvm use 22
-	print_green 'installed npm'
+	print_green 'installed nvm'
 }
 
 function install_sadtalker {
@@ -212,7 +212,7 @@ function install_stable_diffusion_webui {
 	sudo nala install -y python3-dev python3-venv libgl1 libglib2.0-0 libsndfile1 google-perftools
 	curl -fsSL https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui/master/webui.sh -o ~/webui.sh
 	chmod +x ~/webui.sh
-	echo '~/webui.sh --skip-torch-cuda-test --precision full --no-half --listen --api &' >> ~/.bashrc
+	echo '~/webui.sh --skip-torch-cuda-test --precision full --no-half --listen --api &>/dev/null &' >> ~/.bashrc
 	print_green 'installed stable diffusion webui'
 }
 
@@ -272,6 +272,10 @@ function install_docling {
 function install_n8n {
 	nvm use 22
 	npm install n8n -g
+	cat >> ~/.bashrc <<-'EOF'
+		export N8N_RUNNERS_ENABLED=true
+		n8n start &>/dev/null &
+	EOF
 	print_green 'installed n8n'
 }
 
@@ -308,7 +312,6 @@ sudo curl -fsSL https://raw.githubusercontent.com/mitchell486/nanorc/master/powe
 
 cat >> ~/.bashrc <<-'EOF'
 	export BAT_THEME=Dracula
-	export N8N_RUNNERS_ENABLED=true
 	alias edit_profile="nano ~/.bashrc"
 	alias lm="eza --long --color=always --icons=always --all"
 	alias cat="batcat -p"
